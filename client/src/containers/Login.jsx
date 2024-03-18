@@ -21,8 +21,11 @@ export default function Login() {
   const loginWithGoogle = async () => {
     await signInWithPopup(firebaseAuth, provider).then((userCred) => {
       firebaseAuth.onAuthStateChanged((cred) => {
-        console.log(cred);
+       // console.log(cred);  - to see access tokens
         if (cred) {
+          cred.getIdToken().then(token => {
+            console.log("token-",token)
+          })
         }
       });
     });
