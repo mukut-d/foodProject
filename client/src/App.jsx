@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { fadeInOut } from "./animations";
 import { validateUserJWTToken } from "./api";
+import { Alert, MainLoader } from "./components";
 import { app } from "./config/firebase.config";
 import { Login, Main } from "./containers";
 import { setUserDetails } from "./context/actions/userActions";
@@ -27,7 +28,7 @@ function App() {
             dispatch(setUserDetails(data));
           });
         });
-      } 
+      }
       setInterval(() => {
         setIsLoading(false);
       }, 3000);
@@ -40,13 +41,15 @@ function App() {
           {...fadeInOut}
           className="fixed z-50 inset-0 bg-lighttextGray backdrop-blur-md flex items-center justify-center w-full"
         >
-          loading........
+          <MainLoader />
         </motion.div>
       )}
       <Routes>
         <Route path="/*" element={<Main />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+
+      <Alert type={"warning"} message={"Hi There"} />
     </div>
   );
 }
