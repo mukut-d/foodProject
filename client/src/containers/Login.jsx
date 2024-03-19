@@ -7,7 +7,12 @@ import { buttonClick } from "../animations";
 import { FcGoogle } from "react-icons/fc";
 import { app } from "../config/firebase.config";
 
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { validateUserJWTToken } from "../api";
 
 export default function Login() {
@@ -22,17 +27,46 @@ export default function Login() {
   const loginWithGoogle = async () => {
     await signInWithPopup(firebaseAuth, provider).then((userCred) => {
       firebaseAuth.onAuthStateChanged((cred) => {
-       // console.log(cred);  - to see access tokens
+        // console.log(cred);  - to see access tokens
         if (cred) {
-          cred.getIdToken().then(token => {
-           // console.log("token-",token)
-           validateUserJWTToken(token).then(data => {
-            console.log(data);
-           })
-          })
+          cred.getIdToken().then((token) => {
+            // console.log("token-",token)
+            validateUserJWTToken(token).then((data) => {
+              console.log(data);
+            });
+          });
         }
       });
     });
+  };
+
+  const signUpWithEmailPass = async () => {
+    if (userEmail === "" || password === "" || confirmPassword === "") {
+      // alert message
+    } else {
+      if (password === confirmPassword) {
+        await createUserWithEmailAndPassword(
+          firebaseAuth,
+          userEmail,
+          password
+        ).then((userCred) => {
+          firebaseAuth.onAuthStateChanged((cred) => {
+            // console.log(cred);  - to see access tokens
+            if (cred) {
+              cred.getIdToken().then((token) => {
+                // console.log("token-",token)
+                validateUserJWTToken(token).then((data) => {
+                  console.log(data);
+                });
+              });
+            }
+          });
+        });
+        console.log("Equal");
+      } else {
+        // alert message
+      }
+    }
   };
 
   return (
@@ -71,7 +105,7 @@ export default function Login() {
             icon={<FaLock className="text-xl text-textColor" />}
             inputState={password}
             inputStateFunc={setPassword}
-            text="password"
+            type="password"
             isSignUp={isSignUp}
           />
 
@@ -81,7 +115,7 @@ export default function Login() {
               icon={<FaLock className="text-xl text-textColor" />}
               inputState={confirmPassword}
               inputStateFunc={setConfirmPassword}
-              text="password"
+              type="password"
               isSignUp={isSignUp}
             />
           )}
@@ -115,6 +149,7 @@ export default function Login() {
             <motion.button
               {...buttonClick}
               className="w-full px-4 py-2 rounded-md bg-red-400 cursor-pointer text-white text-xl capitalize hover:bg-red-500 transition-all duration-150"
+              onClick={signUpWithEmailPass}
             >
               Sign Up
             </motion.button>
