@@ -2,16 +2,18 @@ import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { LoginBg, Logo } from "../assets";
 import { LoginInput } from "../components";
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { buttonClick } from "../animations";
 import { FcGoogle } from "react-icons/fc";
 import { app } from "../config/firebase.config";
+import { useNavigate } from "react-router-dom";
 
 import {
   getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { validateUserJWTToken } from "../api";
 
@@ -24,6 +26,8 @@ export default function Login() {
   const firebaseAuth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
+  const navigate = useNavigate();
+
   const loginWithGoogle = async () => {
     await signInWithPopup(firebaseAuth, provider).then((userCred) => {
       firebaseAuth.onAuthStateChanged((cred) => {
@@ -34,6 +38,7 @@ export default function Login() {
             validateUserJWTToken(token).then((data) => {
               console.log(data);
             });
+            navigate("/", { replace: true });
           });
         }
       });
@@ -45,6 +50,9 @@ export default function Login() {
       // alert message
     } else {
       if (password === confirmPassword) {
+        setUserEmail("");
+        setPassword("");
+        setConfirmPassword("");
         await createUserWithEmailAndPassword(
           firebaseAuth,
           userEmail,
@@ -58,14 +66,37 @@ export default function Login() {
                 validateUserJWTToken(token).then((data) => {
                   console.log(data);
                 });
+                navigate("/", { replace: true });
               });
             }
           });
         });
-        console.log("Equal");
       } else {
         // alert message
       }
+    }
+  };
+
+  const signInWithEmailPass = async () => {
+    if (userEmail !== "" && password !== "") {
+      await signInWithEmailAndPassword(firebaseAuth, userEmail, password).then(
+        (userCred) => {
+          firebaseAuth.onAuthStateChanged((cred) => {
+            // console.log(cred);  - to see access tokens
+            if (cred) {
+              cred.getIdToken().then((token) => {
+                // console.log("token-",token)
+                validateUserJWTToken(token).then((data) => {
+                  console.log(data);
+                });
+                navigate("/", { replace: true });
+              });
+            }
+          });
+        }
+      );
+    } else {
+      // alert message
     }
   };
 
@@ -157,6 +188,7 @@ export default function Login() {
             <motion.button
               {...buttonClick}
               className="w-full px-4 py-2 rounded-md bg-red-400 cursor-pointer text-white text-xl capitalize hover:bg-red-500 transition-all duration-150"
+              onClick={signInWithEmailPass}
             >
               Sign In
             </motion.button>
