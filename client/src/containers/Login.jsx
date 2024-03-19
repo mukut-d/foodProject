@@ -16,6 +16,9 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { validateUserJWTToken } from "../api";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserDetails } from "../context/actions/userActions";
+import { useEffect } from "react";
 
 export default function Login() {
   const [userEmail, setUserEmail] = useState("");
@@ -27,6 +30,15 @@ export default function Login() {
   const provider = new GoogleAuthProvider();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if(user){
+      navigate("/", {replace: true})
+    }
+  },[user])
 
   const loginWithGoogle = async () => {
     await signInWithPopup(firebaseAuth, provider).then((userCred) => {
@@ -36,7 +48,8 @@ export default function Login() {
           cred.getIdToken().then((token) => {
             // console.log("token-",token)
             validateUserJWTToken(token).then((data) => {
-              console.log(data);
+              // console.log(data);
+              dispatch(setUserDetails(data));
             });
             navigate("/", { replace: true });
           });
@@ -44,6 +57,14 @@ export default function Login() {
       });
     });
   };
+
+  // actions
+
+  // reducer
+
+  // store -> Globalised Store
+
+  // dispatch
 
   const signUpWithEmailPass = async () => {
     if (userEmail === "" || password === "" || confirmPassword === "") {
@@ -64,7 +85,8 @@ export default function Login() {
               cred.getIdToken().then((token) => {
                 // console.log("token-",token)
                 validateUserJWTToken(token).then((data) => {
-                  console.log(data);
+                  //  console.log(data);
+                  dispatch(setUserDetails(data));
                 });
                 navigate("/", { replace: true });
               });
@@ -87,7 +109,8 @@ export default function Login() {
               cred.getIdToken().then((token) => {
                 // console.log("token-",token)
                 validateUserJWTToken(token).then((data) => {
-                  console.log(data);
+                  //    console.log(data);
+                  dispatch(setUserDetails(data));
                 });
                 navigate("/", { replace: true });
               });
