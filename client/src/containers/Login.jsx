@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { app } from "../config/firebase.config";
 
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { validateUserJWTToken } from "../api";
 
 export default function Login() {
   const [userEmail, setUserEmail] = useState("");
@@ -24,7 +25,10 @@ export default function Login() {
        // console.log(cred);  - to see access tokens
         if (cred) {
           cred.getIdToken().then(token => {
-            console.log("token-",token)
+           // console.log("token-",token)
+           validateUserJWTToken(token).then(data => {
+            console.log(data);
+           })
           })
         }
       });
