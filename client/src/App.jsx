@@ -2,8 +2,8 @@ import { getAuth } from "firebase/auth";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import { fadeInOut } from "./animations";
 import { validateUserJWTToken } from "./api";
 import { Alert, MainLoader } from "./components";
@@ -14,6 +14,7 @@ import { setUserDetails } from "./context/actions/userActions";
 function App() {
   const firebaseAuth = getAuth(app);
   const [isLoading, setIsLoading] = useState(false);
+  const alert = useSelector((state) => state.alert);
 
   const dispatch = useDispatch();
 
@@ -49,7 +50,7 @@ function App() {
         <Route path="/login" element={<Login />} />
       </Routes>
 
-      <Alert type={"warning"} message={"Hi There"} />
+      {alert?.type && <Alert type={alert?.type} message={alert?.message} />}
     </div>
   );
 }

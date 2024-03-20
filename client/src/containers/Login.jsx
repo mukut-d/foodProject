@@ -19,6 +19,7 @@ import { validateUserJWTToken } from "../api";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "../context/actions/userActions";
 import { useEffect } from "react";
+import { alertInfo, alertWarning } from "../context/actions/alertActions";
 
 export default function Login() {
   const [userEmail, setUserEmail] = useState("");
@@ -33,12 +34,13 @@ export default function Login() {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user);
+  const alert = useSelector((state) => state.alert);
 
   useEffect(() => {
-    if(user){
-      navigate("/", {replace: true})
+    if (user) {
+      navigate("/", { replace: true });
     }
-  },[user])
+  }, [user]);
 
   const loginWithGoogle = async () => {
     await signInWithPopup(firebaseAuth, provider).then((userCred) => {
@@ -58,17 +60,10 @@ export default function Login() {
     });
   };
 
-  // actions
-
-  // reducer
-
-  // store -> Globalised Store
-
-  // dispatch
-
   const signUpWithEmailPass = async () => {
     if (userEmail === "" || password === "" || confirmPassword === "") {
       // alert message
+      dispatch(alertInfo("Required fields should not be empty"));
     } else {
       if (password === confirmPassword) {
         setUserEmail("");
@@ -95,6 +90,7 @@ export default function Login() {
         });
       } else {
         // alert message
+        dispatch(alertWarning("Password doesn't match"));
       }
     }
   };
@@ -120,6 +116,7 @@ export default function Login() {
       );
     } else {
       // alert message
+      dispatch(alertWarning("Password doesn't match"));
     }
   };
 
