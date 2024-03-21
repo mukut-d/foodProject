@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { statuses } from "../util/styles";
 import { Spinner } from "../components";
-import { FaCloudUploadAlt } from "../assets/icons";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { FaCloudUploadAlt, MdDelete } from "../assets/icons";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { storage } from "../config/firebase.config";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,6 +15,8 @@ import {
   alertNULL,
   alertSuccess,
 } from "../context/actions/alertActions";
+import { buttonClick } from "../animations";
+import { motion } from "framer-motion";
 
 const DBNewItem = () => {
   const [itemName, setItemName] = useState("");
@@ -54,6 +61,20 @@ const DBNewItem = () => {
     );
   };
 
+  const deleteImageFromFirebase = () => {
+    setIsLoading(true);
+    const deleteRef = ref(storage, imageDownloadUrl);
+
+    deleteObject(deleteRef).then(() => {
+      setImageDownloadUrl(null);
+      setIsLoading(false);
+      dispatch(alertSuccess(`Image removed from the cloud`));
+      setTimeout(() => {
+        dispatch(alertNULL());
+      }, 3000);
+    });
+  };
+
   return (
     <>
       <div className="flex items-center justify-center flex-col pt-6 px-24 w-full">
@@ -95,7 +116,26 @@ const DBNewItem = () => {
               <>
                 <div className="w-full h-full flex flex-col items-center justify-evenly px-24">
                   <Spinner />
-                  {progress}
+                  {Math.round(progress > 0) && (
+                    <div className="w-full flex flex-col items-center justify-center gap-2">
+                      <div className="flex justify-between w-full">
+                        <span className="text-base font-medium text-textColor ">
+                          Progress
+                        </span>
+                        <span className="text-sm font-medium text-textColor">
+                          {Math.round(progress) > 0 && (
+                            <>{`${Math.round(progress)}%`}</>
+                          )}
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="bg-red-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                          style={{ width: `${Math.round(progress)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -123,7 +163,25 @@ const DBNewItem = () => {
                     </label>
                   </>
                 ) : (
-                  <></>
+                  <>
+                    <div className="relative w-full h-full overflow-hidden rounded-md">
+                      <motion.img
+                        whileHover={{ scale: 1.15 }}
+                        src={imageDownloadUrl}
+                        className="w-full h-full object-cover"
+                      />
+                      <motion.button
+                        {...buttonClick}
+                        type="button"
+                        className="absolute top-3 right-3 p-3 rounded-full bg-red-500 text-xl cursor-pointer outline-none hover:shadow-md duration-500 transition-all ease-in-out   "
+                        onClick={() =>
+                          deleteImageFromFirebase(imageDownloadUrl)
+                        }
+                      >
+                        <MdDelete className="-rotate-0" />
+                      </motion.button>
+                    </div>
+                  </>
                 )}
               </>
             )}
