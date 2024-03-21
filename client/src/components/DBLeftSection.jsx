@@ -5,7 +5,7 @@ import { isActiveStyles, isNotActiveStyles } from "../util/styles";
 
 const DBLeftSection = () => {
   return (
-    <div className="h-full py-12 flex flex-col bg-rose-50  backdrop-blur-md shadow-md min-w-210 w-300 gap-3 ">
+    <div className="h-full py-12 flex flex-col bg-lightOverlay  backdrop-blur-md shadow-md min-w-210 w-300 gap-3 ">
       <NavLink to={"/"} className="flex items-center justify-start px-6 gap-4">
         <img src={Logo} alt="" className="w-12 " />
         <p className="font-semibold text-xl">City</p>

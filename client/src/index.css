@@ -20,3 +20,7 @@ body {
   background-color: rgb(232, 226, 226);
   opacity: 0.5;
 }
+
+.MuiPaper-root {
+  width: 100%;
+}

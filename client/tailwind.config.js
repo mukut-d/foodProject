@@ -60,6 +60,6 @@ module.exports = {
     },
   },
 
-  plugins: [],
-  // plugins: [require("tailwind-scrollbar")],
+  // plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };
