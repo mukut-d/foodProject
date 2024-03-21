@@ -46,7 +46,7 @@ const DBHeader = () => {
             <input
               type={"text"}
               placeholder="Search Here..."
-              className="border-none outline-none bg-transparent w-32 text-base font-semibold text-textColor"
+              className="border-none outline-none bg-transparent w-32 text-base font-semibold text-textColor "
             />
             <BsToggles2 className="text-gray-400 text-2xl" />
           </div>
