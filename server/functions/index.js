@@ -36,7 +36,10 @@ app.get("/", (req, res) => {
   return res.send("hello world");
 });
 
-const userRoute = require('./routes/user.js')
-app.use("/api/users", userRoute)
+const userRoute = require("./routes/user.js");
+app.use("/api/users", userRoute);
+
+const productRoute = require("./routes/products");
+app.use("/api/products/", productRoute);
 
 exports.app = functions.https.onRequest(app);

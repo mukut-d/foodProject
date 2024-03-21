@@ -17,6 +17,7 @@ import {
 } from "../context/actions/alertActions";
 import { buttonClick } from "../animations";
 import { motion } from "framer-motion";
+import { addNewProduct } from "../api";
 
 const DBNewItem = () => {
   const [itemName, setItemName] = useState("");
@@ -72,6 +73,27 @@ const DBNewItem = () => {
       setTimeout(() => {
         dispatch(alertNULL());
       }, 3000);
+    });
+  };
+
+  const submitNewData = () => {
+    const data = {
+      product_name: itemName,
+      product_category: category,
+      product_price: price,
+      imageURL: imageDownloadUrl,
+    };
+    // console.log(data);
+    addNewProduct(data).then((res) => {
+        console.log(res)
+      dispatch(alertSuccess("New Item added"));
+      setTimeout(() => {
+        dispatch(alertNULL());
+      }, 3000);
+      setImageDownloadUrl(null);
+      setItemName("");
+      setPrice("");
+      setCategory(null);
     });
   };
 
@@ -186,6 +208,13 @@ const DBNewItem = () => {
               </>
             )}
           </div>
+          <motion.button
+            onClick={submitNewData}
+            {...buttonClick}
+            className="w-9/12  py-2  rounded-md bg-red-400 text-primary hover:bg-red-600 cursor-pointer"
+          >
+            Save
+          </motion.button>
         </div>
       </div>
     </>
