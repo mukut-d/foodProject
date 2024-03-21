@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { statuses } from "../util/styles";
+import { Spinner } from "../components";
+import { FaCloudUploadAlt } from "../assets/icons";
 
 const DBNewItem = () => {
   const [itemName, setItemName] = useState("");
   const [category, setCategory] = useState(null);
+  const [price, setPrice] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(null);
+  const [imageDownloadUrl, setImageDownloadUrl] = useState(null);
+
+    const uploadImage = () => {
+        
+    }
+
   return (
     <>
       <div className="flex items-center justify-center flex-col pt-6 px-24 w-full">
@@ -31,6 +42,51 @@ const DBNewItem = () => {
                   </p>
                 );
               })}
+          </div>
+
+          <InputValueField
+            type={"number"}
+            placeholder="Item Price Here"
+            stateFunc={setPrice}
+            stateValue={price}
+          />
+
+          <div className="w-full bg-card backdrop-blur-md h-370 rounded-md border-2 border-dotted border-gray-300 cursor-pointer">
+            {isLoading ? (
+              <>
+                <div className="w-full h-full flex flex-col items-center justify-evenly px-24">
+                  <Spinner />
+                </div>
+              </>
+            ) : (
+              <>
+                {!imageDownloadUrl ? (
+                  <>
+                    <label>
+                      <div className="flex flex-col items-center justify-center h-full w-full cursor-pointer">
+                        <div className="flex flex-col justify-center items-center cursor-pointer">
+                          <p className="font-bold text-4xl">
+                            <FaCloudUploadAlt className="-rotate-0" />
+                          </p>
+                          <p className="text-lg text-textColor">
+                            Click to upload an image
+                          </p>
+                        </div>
+                      </div>
+                      <input
+                        type="file"
+                        name="upload-image"
+                        accept="image/*"
+                        onChange={uploadImage}
+                        className="w-0 h-0"
+                      />
+                    </label>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
