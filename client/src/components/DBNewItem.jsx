@@ -2,6 +2,14 @@ import { useState } from "react";
 import { statuses } from "../util/styles";
 import { Spinner } from "../components";
 import { FaCloudUploadAlt } from "../assets/icons";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "../config/firebase.config";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  alertDanger,
+  alertNULL,
+  alertSuccess,
+} from "../context/actions/alertActions";
 
 const DBNewItem = () => {
   const [itemName, setItemName] = useState("");
@@ -11,10 +19,39 @@ const DBNewItem = () => {
   const [progress, setProgress] = useState(null);
   const [imageDownloadUrl, setImageDownloadUrl] = useState(null);
 
+  const alert = useSelector((state) => state.alert);
+  const dispatch = useDispatch();
+
   const uploadImage = (e) => {
     setIsLoading(true);
     const imageFile = e.target.files[0];
-    console.log(imageFile);
+
+    const storageRef = ref(storage, `images/${Date.now()}_${imageFile.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, imageFile);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      },
+      (error) => {
+        dispatch(alertDanger(`Error : ${error}`));
+        setTimeout(() => {
+          dispatch(alertNULL());
+        }, 3000);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          //  console.log("file available at", downloadURL);
+          setImageDownloadUrl(downloadURL);
+          setIsLoading(false);
+          setProgress(null);
+          dispatch(alertSuccess(`Image uploaded to the cloud`));
+          setTimeout(() => {
+            dispatch(alertNULL());
+          }, 3000);
+        });
+      }
+    );
   };
 
   return (
@@ -58,6 +95,7 @@ const DBNewItem = () => {
               <>
                 <div className="w-full h-full flex flex-col items-center justify-evenly px-24">
                   <Spinner />
+                  {progress}
                 </div>
               </>
             ) : (
