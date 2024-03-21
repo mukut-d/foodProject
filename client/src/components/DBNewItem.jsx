@@ -11,9 +11,11 @@ const DBNewItem = () => {
   const [progress, setProgress] = useState(null);
   const [imageDownloadUrl, setImageDownloadUrl] = useState(null);
 
-    const uploadImage = () => {
-        
-    }
+  const uploadImage = (e) => {
+    setIsLoading(true);
+    const imageFile = e.target.files[0];
+    console.log(imageFile);
+  };
 
   return (
     <>
