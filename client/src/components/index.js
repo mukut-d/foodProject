@@ -13,3 +13,4 @@ export { default as DBNewItem } from "./DBNewItem";
 export { default as DBOrders } from "./DBOrders";
 export { default as DataTable } from "./DataTable";
 export { default as Spinner } from "./Spinner";
+export { default as Home } from "./Home";
