@@ -4,8 +4,10 @@ export const setAllProducts = (products) => {
     products: products,
   };
 };
-export const getAllProducts = () => {
+
+export const getAllProducts = (products) => {
   return {
     type: "GET_ALL_PRODUCTS",
   };
 };
+

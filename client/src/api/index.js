@@ -24,7 +24,7 @@ export const addNewProduct = async (data) => {
   }
 };
 
-// get all products
+// get all the products
 export const getAllProducts = async () => {
   try {
     const res = await axios.get(`${baseURL}/api/products/all`);
@@ -40,6 +40,16 @@ export const deleteAProduct = async (productId) => {
     const res = await axios.delete(
       `${baseURL}/api/products/delete/${productId}`
     );
+    return res.data.data;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const getAllUsers = async () => {
+  try {
+    const res = await axios.get(`${baseURL}/api/users/all`);
+    console.log("users-", res);
     return res.data.data;
   } catch (err) {
     return null;

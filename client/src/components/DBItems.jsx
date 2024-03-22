@@ -7,7 +7,7 @@ import { setAllProducts } from "../context/actions/productActions";
 
 const DBItems = () => {
   const products = useSelector((state) => state.products);
-   console.log("products-", products);
+  console.log("products-", products);
   const dispatch = useDispatch();
   return (
     <>
