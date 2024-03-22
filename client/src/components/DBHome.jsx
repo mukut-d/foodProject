@@ -6,7 +6,7 @@ import { setAllProducts } from "../context/actions/productActions";
 const DBHome = () => {
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (!products) {
       getAllProducts().then((data) => {
@@ -14,6 +14,7 @@ const DBHome = () => {
       });
     }
   }, []);
+
   return (
     <>
       <div>DBHome</div>
