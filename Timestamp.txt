@@ -1,6 +1,6 @@
 https://www.youtube.com/watch?v=_9mmXqz4AbE&t=2430s
 
-4:25:24
+6:35:25
 
 PTR :-
 He's using yarn , I'm using vite 

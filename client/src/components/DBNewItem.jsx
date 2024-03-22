@@ -17,7 +17,8 @@ import {
 } from "../context/actions/alertActions";
 import { buttonClick } from "../animations";
 import { motion } from "framer-motion";
-import { addNewProduct } from "../api";
+import { addNewProduct, getAllProducts } from "../api";
+import { setAllProducts } from "../context/actions/productActions";
 
 const DBNewItem = () => {
   const [itemName, setItemName] = useState("");
@@ -85,7 +86,7 @@ const DBNewItem = () => {
     };
     // console.log(data);
     addNewProduct(data).then((res) => {
-        console.log(res)
+      console.log(res);
       dispatch(alertSuccess("New Item added"));
       setTimeout(() => {
         dispatch(alertNULL());
@@ -94,6 +95,9 @@ const DBNewItem = () => {
       setItemName("");
       setPrice("");
       setCategory(null);
+    });
+    getAllProducts().then((data) => {
+      dispatch(setAllProducts(data));
     });
   };
 

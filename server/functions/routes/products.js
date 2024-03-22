@@ -21,4 +21,24 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// get all products
+router.get("/all", async (req, res) => {
+  (async () => {
+    try {
+      let query = db.collection("products");
+      let response = [];
+      await query.get().then((querysnapshot) => {
+        let docs = querysnapshot.docs;
+        docs.map((doc) => {
+          response.push({ ...doc.data() });
+        });
+        return response;
+      });
+      return res.status(200).send({ success: true, data: response });
+    } catch (err) {
+      return res.send({ success: false, msg: `Error : ${err}` });
+    }
+  })();
+});
+
 module.exports = router;
