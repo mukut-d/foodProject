@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../api";
-import { Header, Home, HomeSlider } from "../components";
+import { FilterSection, Header, Home, HomeSlider } from "../components";
 import { setAllProducts } from "../context/actions/productActions";
 
 export default function Main() {
@@ -22,6 +22,7 @@ export default function Main() {
       <div className="w-full flex flex-col items-start justify-center mt-40 px-6 md:px-24 2xl:px-96 gap-12 pb-24 ">
         <Home />
         <HomeSlider />
+        <FilterSection />
       </div>
     </main>
   );
