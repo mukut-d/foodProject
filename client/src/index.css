@@ -24,3 +24,7 @@ body {
 .MuiPaper-root {
   width: 100%;
 }
+
+#cart {
+  padding-bottom: 9rem;
+}

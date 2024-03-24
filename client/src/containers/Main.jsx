@@ -25,7 +25,7 @@ export default function Main() {
         <HomeSlider />
         <FilterSection />
       </div>
-      {isCart &&  <Cart />}
+      {isCart && <Cart />}
     </main>
   );
 }

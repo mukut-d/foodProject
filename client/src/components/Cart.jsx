@@ -1,9 +1,10 @@
+import axios from "axios";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buttonClick, slideIn, staggerFadeInOut } from "../animations";
-import { getAllCartItems, increaseItemQuantity } from "../api";
+import { baseURL, getAllCartItems, increaseItemQuantity } from "../api";
 import {
   BiChevronsRight,
   FcClearFilters,
@@ -16,6 +17,7 @@ import { setCartOff } from "../context/actions/displayCartAction";
 const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
   const [total, setTotal] = useState(0);
   console.log("cart length-", cart);
   useEffect(() => {
@@ -27,6 +29,23 @@ const Cart = () => {
       });
     }
   }, [cart]);
+  const handleCheckOut = () => {
+    const data = {
+      user: user,
+      cart: cart,
+      total: total,
+    };
+
+    axios
+      .post(`${baseURL}/api/products/create-checkout-session`, { data })
+      .then((res) => {
+        console.log(res);
+        if (res.data.url) {
+          window.location.href = res.data.url;
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
@@ -53,7 +72,7 @@ const Cart = () => {
             <>
               <div
                 className="flex flex-col w-full items-start justify-start gap-3
-             h-[65%] overflow-y-scroll scrollbar-none px-4"
+             h-[65%] overflow-y-scroll scrollbar-none    px-4"
               >
                 {cart &&
                   cart?.length > 0 &&
@@ -61,7 +80,7 @@ const Cart = () => {
                     <CartItemCard key={i} index={i} data={item} />
                   ))}
               </div>
-              <div className="bg-zinc-800 rounded-t-[60px] w-full h-[35%] flex flex-col items-center justify-center px-4 py-6 gap-24">
+              <div className="bg-zinc-800 rounded-t-[60px] w-full h-[35%] flex flex-col items-center justify-center px-4 py-6  gap-24">
                 <div className="w-full flex items-center justify-evenly">
                   <p className="text-3xl text-zinc-500 font-semibold">Total</p>
                   <p className="text-3xl text-orange-500 font-semibold flex items-center justify-center gap-2">
@@ -69,6 +88,14 @@ const Cart = () => {
                     {total}
                   </p>
                 </div>
+                <motion.button
+                  {...buttonClick}
+                  id="cart"
+                  className="bg-orange-400 w-[70%] px-4 py-3 text-xl text-headingColor font-semibold hover:bg-orange-500 drop-shadow-md rounded-2xl"
+                  onClick={handleCheckOut}
+                >
+                  Check Out
+                </motion.button>
               </div>
             </>
           ) : (
@@ -97,7 +124,7 @@ export const CartItemCard = ({ index, data }) => {
       });
     });
   };
-  
+
   const incrementCart = (productId) => {
     dispatch(alertSuccess("Updated the Cart Item"));
     increaseItemQuantity(user?.user_id, productId, "increment").then((data) => {
