@@ -3,17 +3,31 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buttonClick, slideIn, staggerFadeInOut } from "../animations";
+import { getAllCartItems, increaseItemQuantity } from "../api";
 import {
   BiChevronsRight,
   FcClearFilters,
   HiCurrencyRupee,
 } from "../assets/icons";
+import { alertNULL, alertSuccess } from "../context/actions/alertActions";
+import { setCartItems } from "../context/actions/cartAction";
 import { setCartOff } from "../context/actions/displayCartAction";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  const [total, setTotal] = useState(0);
   console.log("cart length-", cart);
+  useEffect(() => {
+    let tot = 0;
+    if (cart) {
+      cart.map((data) => {
+        tot = tot + data.product_price * data.quantity;
+        setTotal(tot);
+      });
+    }
+  }, [cart]);
+
   return (
     <>
       <motion.div
@@ -47,6 +61,15 @@ const Cart = () => {
                     <CartItemCard key={i} index={i} data={item} />
                   ))}
               </div>
+              <div className="bg-zinc-800 rounded-t-[60px] w-full h-[35%] flex flex-col items-center justify-center px-4 py-6 gap-24">
+                <div className="w-full flex items-center justify-evenly">
+                  <p className="text-3xl text-zinc-500 font-semibold">Total</p>
+                  <p className="text-3xl text-orange-500 font-semibold flex items-center justify-center gap-2">
+                    <HiCurrencyRupee className="text-primary" />
+                    {total}
+                  </p>
+                </div>
+              </div>
             </>
           ) : (
             <>
@@ -61,12 +84,28 @@ const Cart = () => {
 
 export const CartItemCard = ({ index, data }) => {
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
   const [itemTotal, setItemTotal] = useState(0);
+  const dispatch = useDispatch();
+
   const decrementCart = (productId) => {
-    
+    dispatch(alertSuccess("Updated the Cart Item"));
+    increaseItemQuantity(user?.user_id, productId, "decrement").then((data) => {
+      getAllCartItems(user?.user_id).then((items) => {
+        dispatch(setCartItems(items));
+        dispatch(alertNULL());
+      });
+    });
   };
+  
   const incrementCart = (productId) => {
-    
+    dispatch(alertSuccess("Updated the Cart Item"));
+    increaseItemQuantity(user?.user_id, productId, "increment").then((data) => {
+      getAllCartItems(user?.user_id).then((items) => {
+        dispatch(setCartItems(items));
+        dispatch(alertNULL());
+      });
+    });
   };
 
   useEffect(() => {
