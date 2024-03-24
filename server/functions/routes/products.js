@@ -1,7 +1,10 @@
 const router = require("express").Router();
 const admin = require("firebase-admin");
 const db = admin.firestore();
+const express = require("express");
+
 db.settings({ ignoreUndefinedProperties: true });
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 router.post("/create", async (req, res) => {
   try {
@@ -174,5 +177,97 @@ router.get("/getCartItems/:user_id", async (req, res) => {
     }
   })();
 });
+
+router.post("/create-checkout-session", async (req, res) => {
+  const line_items = req.body.data.cart.map((item) => {
+    return {
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: item.product_name,
+          images: [item.imageURL],
+          metadata: {
+            id: item.productId,
+          },
+        },
+        unit_amount: item.product_price * 100,
+      },
+      quantity: item.quantity,
+    };
+  });
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    shipping_address_collection: { allowed_countries: ["IN"] },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: 0, currency: "inr" },
+          display_name: "Free shipping",
+          delivery_estimate: {
+            minimum: { unit: "hour", value: 2 },
+            maximum: { unit: "hour", value: 4 },
+          },
+        },
+      },
+    ],
+    phone_number_collection: {
+      enabled: true,
+    },
+    line_items,
+    mode: "payment",
+    success_url: `${process.env.CLIENT_URL}/checkout-success`,
+    cancel_url: `${process.env.CLIENT_URL}/`,
+  });
+
+  res.send({ url: session.url });
+});
+
+let endpointSecret;
+//  endpointSecret = process.env.WEBHOOK_SECRET;
+
+router.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    let eventType;
+    let data;
+
+    if (endpointSecret) {
+      let event;
+      try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      } catch (err) {
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+      }
+      data = event.data.object;
+      eventType = event.type;
+    } else {
+      data = req.body.data.object;
+      eventType = req.body.type;
+    }
+
+    // Handle the event
+    if (eventType === "checkout.session.completed") {
+      console.log(data);
+    }
+    // switch (event.type) {
+    //   case "payment_intent.succeeded":
+    //     const paymentIntentSucceeded = event.data.object;
+    //     // Then define and call a function to handle the event payment_intent.succeeded
+    //     break;
+    //   // ... handle other event types
+    //   default:
+    //     console.log(`Unhandled event type ${event.type}`);
+    // }
+
+    // Return a 200 response to acknowledge receipt of the event
+    res.send();
+  }
+);
 
 module.exports = router;

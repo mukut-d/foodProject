@@ -6,7 +6,7 @@ PTR :-
 He's using yarn , I'm using vite 
 SO Install packages with npm only because yarn will give warning
 
-
+used webhooks
 swiper slider
 core ui charts
 material ui table
