@@ -24,17 +24,14 @@ npm run serve
 # To create react project using npm & yarn
 
 ```
-npm create-react-app folder_name
-```
-
-```
-yarn create react-app folder_name
+npm create vite@latest .
 ```
 
 # To start the client
 
 ```
-yarn start
+npm run dev
+
 ```
 
 > Packages Used
