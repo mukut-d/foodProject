@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import { fadeInOut } from "./animations";
 import { getAllCartItems, validateUserJWTToken } from "./api";
-import { Alert, CheckoutSuccess, MainLoader } from "./components";
+import { Alert, CheckoutSuccess, MainLoader, UsersOrder } from "./components";
 import { app } from "./config/firebase.config";
 import { Dashboard, Login, Main } from "./containers";
 import { setCartItems } from "./context/actions/cartAction";
@@ -57,7 +57,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard/*" element={<Dashboard />} />
         <Route path="/checkout-success" element={<CheckoutSuccess />} />
-        {/* <Route path="/user-orders" element={<UsersOrder />} /> */}
+        <Route path="/user-orders" element={<UsersOrder />} />
       </Routes>
 
       {alert?.type && <Alert type={alert?.type} message={alert?.message} />}
