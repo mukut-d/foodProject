@@ -9,6 +9,7 @@ import { useState } from "react";
 import { getAuth } from "firebase/auth";
 import { app } from "../config/firebase.config";
 import { setUserNull } from "../context/actions/userActions";
+import { setCartOn } from "../context/actions/displayCartAction";
 
 const Header = () => {
   const user = useSelector((state) => state.user);
@@ -71,7 +72,11 @@ const Header = () => {
             </NavLink>
           </ul>
 
-          <motion.div {...buttonClick} className="relative cursor-pointer">
+          <motion.div
+            {...buttonClick}
+            onClick={() => dispatch(setCartOn())}
+            className="relative cursor-pointer"
+          >
             <MdShoppingCart className="text-3xl text-textColor" />
             {cart?.length > 0 && (
               <>
@@ -101,7 +106,7 @@ const Header = () => {
                   <motion.div
                     {...slideTop}
                     onMouseLeave={() => setIsMenu(false)}
-                    className="px-6 py-4 w-48 bg-rose-50 backdrop-blur-md rounded-md shadow-md absolute top-12 right-0 flex flex-col gap-4"
+                    className="px-6 py-4 w-48 bg-lightOverlay backdrop-blur-md rounded-md shadow-md absolute top-12 right-0 flex flex-col gap-4"
                   >
                     <Link
                       className=" hover:text-red-500 text-xl text-textColor"
@@ -142,7 +147,7 @@ const Header = () => {
               <NavLink to={"/login"}>
                 <motion.button
                   {...buttonClick}
-                  className="px-4 py-2 rounded-md shadow-md bg-rose-50 border border-red-300 cursor-pointer"
+                  className="px-4 py-2 rounded-md shadow-md bg-lightOverlay border border-red-300 cursor-pointer"
                 >
                   Login
                 </motion.button>

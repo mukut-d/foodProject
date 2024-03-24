@@ -128,7 +128,7 @@ export default function Login() {
         className="w-full h-full object-cover absolute top-0 left-0"
       />
       {/* Content Box */}
-      <div className=" flex flex-col items-center  w-[80%] md:w-508 h-full z-10 backdrop-blur-md p-4 px-4 py-12 gap-6">
+      <div className=" flex flex-col items-center bg-lightOverlay  w-[80%] md:w-508 h-full z-10 backdrop-blur-md p-4 px-4 py-12 gap-6">
         {/* Top Logo Section */}
         <div className="flex items-center justify-start gap-4 w-full ">
           <img src={Logo} className="w-8" alt="" />

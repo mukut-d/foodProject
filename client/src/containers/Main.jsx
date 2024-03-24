@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../api";
-import { FilterSection, Header, Home, HomeSlider } from "../components";
+import { Cart, FilterSection, Header, Home, HomeSlider } from "../components";
 import { setAllProducts } from "../context/actions/productActions";
 
 export default function Main() {
   const products = useSelector((state) => state.products);
+  const isCart = useSelector((state) => state.isCart);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function Main() {
         <HomeSlider />
         <FilterSection />
       </div>
+      {isCart &&  <Cart />}
     </main>
   );
 }
