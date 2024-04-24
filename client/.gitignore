@@ -10,8 +10,6 @@ lerna-debug.log*
 Timestamp.txt
 
 
-.env
-# node_modules
 dist
 dist-ssr
 *.local
